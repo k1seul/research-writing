@@ -53,6 +53,10 @@ The alpha stores generated sets and attempts in browser `localStorage`. This is 
 device but does not yet synchronize between phone and laptop. Durable database storage and simple
 single-user authentication are the next infrastructure milestone.
 
+The detailed development sequence, target data model, self-hosting architecture, security checklist,
+and milestone acceptance criteria are in [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md).
+Coding agents should also read [CLAUDE.md](CLAUDE.md) before changing the architecture or prompts.
+
 ## Environment variables
 
 | Variable | Required | Purpose |
@@ -72,9 +76,6 @@ feedback contract.
 
 ## Near-term roadmap
 
-- persistent paper library and cross-device sync
-- single-user authentication and encrypted provider settings
-- page-region crops for precise figure and table practice
-- Anthropic provider adapter
-- evaluation set for hallucinated source anchors and figure-reading errors
-- spaced repetition based on recurring reasoning weaknesses
+See [the implementation plan](docs/IMPLEMENTATION_PLAN.md) for the ordered roadmap. The next required
+milestones are runtime validation and tests, persistent paper storage, cross-device sync,
+single-user authentication, and a private Docker deployment.
