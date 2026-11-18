@@ -150,22 +150,22 @@ export function ResearchWorkspace() {
   const [reviewing, setReviewing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const pdfUrlRef = useRef<string | null>(null);
 
   useEffect(() => {
-    setPaper(readStored<PaperAnalysis | null>(PAPER_STORAGE_KEY, null));
-    setAttempts(readStored<AttemptRecord[]>(ATTEMPT_STORAGE_KEY, []));
-    setAnswers(readStored<Record<string, string>>(ANSWER_STORAGE_KEY, {}));
+    const hydrationTask = window.setTimeout(() => {
+      setPaper(readStored<PaperAnalysis | null>(PAPER_STORAGE_KEY, null));
+      setAttempts(readStored<AttemptRecord[]>(ATTEMPT_STORAGE_KEY, []));
+      setAnswers(readStored<Record<string, string>>(ANSWER_STORAGE_KEY, {}));
+    }, 0);
+    return () => window.clearTimeout(hydrationTask);
   }, []);
 
   useEffect(() => {
-    if (!file) {
-      setPdfUrl(null);
-      return;
-    }
-    const objectUrl = URL.createObjectURL(file);
-    setPdfUrl(objectUrl);
-    return () => URL.revokeObjectURL(objectUrl);
-  }, [file]);
+    return () => {
+      if (pdfUrlRef.current) URL.revokeObjectURL(pdfUrlRef.current);
+    };
+  }, []);
 
   useEffect(() => {
     window.localStorage.setItem(ANSWER_STORAGE_KEY, JSON.stringify(answers));
@@ -199,7 +199,11 @@ export function ResearchWorkspace() {
       setError("The PDF must be smaller than 30 MB.");
       return;
     }
+    if (pdfUrlRef.current) URL.revokeObjectURL(pdfUrlRef.current);
+    const objectUrl = URL.createObjectURL(nextFile);
+    pdfUrlRef.current = objectUrl;
     setFile(nextFile);
+    setPdfUrl(objectUrl);
   }
 
   async function generateExercises() {
